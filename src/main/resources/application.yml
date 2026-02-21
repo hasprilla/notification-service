@@ -1,0 +1,23 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: notification-service
+  r2dbc:
+    url: r2dbc:postgresql://sonifoy-db:5432/notification_db
+    username: sonifoy_user
+    password: sonifoy_password
+  cloud:
+    function:
+      definition: transactionEventConsumer
+    stream:
+      bindings:
+        transactionEventConsumer-in-0:
+          destination: sonifoy.transactions
+          group: notification-service-group
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
