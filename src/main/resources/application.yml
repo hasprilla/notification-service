@@ -8,14 +8,16 @@ spring:
     url: r2dbc:postgresql://sonifoy-db:5432/notification_db
     username: sonifoy_user
     password: sonifoy_password
-  cloud:
-    function:
-      definition: transactionEventConsumer
-    stream:
-      bindings:
-        transactionEventConsumer-in-0:
-          destination: sonifoy.transactions
-          group: notification-service-group
+  kafka:
+    bootstrap-servers: sonifoy-kafka:29092
+    consumer:
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        '[spring.deserializer.value.delegate.class]': org.springframework.kafka.support.serializer.JsonDeserializer
+        '[spring.json.trusted.packages]': "*"
 
 eureka:
   client:
